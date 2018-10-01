@@ -1,0 +1,86 @@
+﻿@model BookWeb.BookService.Book
+
+@{
+    var title = string.IsNullOrEmpty(Model.ID) ? "New Book" : "Edit Book";
+    ViewBag.Title = title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@title</h2>
+
+@{
+    List<SelectListItem> genre = new List<SelectListItem>();
+
+    genre.Add(new SelectListItem
+    {
+        Text = "Fantasy",
+        Value = "Fantasy"
+    });
+    genre.Add(new SelectListItem
+    {
+        Text = "Computer",
+        Value = "Computer"
+    });
+    genre.Add(new SelectListItem
+    {
+        Text = "Romance",
+        Value = "Romance"
+    });
+    genre.Add(new SelectListItem
+    {
+        Text = "Science fiction",
+        Value = "Science fiction"
+    });
+    genre.Add(new SelectListItem
+    {
+        Text = "Horror",
+        Value = "Horror"
+    });
+}
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(b => b.Author) *
+        @Html.TextBoxFor(b => b.Author, new { @class = "form-control", @placeholder = "Last name, First name" })
+        @Html.ValidationMessageFor(b => b.Author)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(b => b.Title) *
+        @Html.TextBoxFor(b => b.Title, new { @class = "form-control", @placeholder = "Book Title" })
+        @Html.ValidationMessageFor(b => b.Title)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(b => b.Price) * (in dollar)
+        @Html.TextBoxFor(b => b.Price, new { @class = "form-control" })
+        @Html.ValidationMessageFor(b => b.Price)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(b => b.PublishDate) (YYYY-MM-DD)
+        @Html.TextBoxFor(b => b.PublishDate, "{0:yyyy/MM/dd}", new { @class = "form-control", @placeholder = "YYYY-MM-DD" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(b => b.Genre) *
+        @Html.DropDownListFor(b => b.Genre, genre, "Select genre", new { @class = "form-control" })
+        @Html.ValidationMessageFor(b => b.Genre)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(b => b.Description)
+        @Html.TextAreaFor(b => b.Description, new { @class = "form-control" })
+    </div>
+
+    @Html.HiddenFor(b => b.ID)
+
+    <button type="submit" formaction=@Url.Action("SaveBook") formmethod="post" class="btn btn-primary">Save</button>
+
+    if (!string.IsNullOrEmpty(Model.ID))
+    {
+        <button type="submit" formaction=@Url.Action("DeleteBook") formmethod="post" style="float: right" class="btn btn-danger">Delete</button>
+    }
+}
+

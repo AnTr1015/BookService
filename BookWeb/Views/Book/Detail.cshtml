@@ -1,0 +1,19 @@
+﻿@model BookWeb.BookService.Book
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+<ul>
+    <li><b>Book ID:</b> @Model.ID</li>
+    <li><b>Author:</b> @Model.Author</li>
+    <li><b>Title:</b> @Model.Title</li>
+    <li><b>Genre:</b> @Model.Genre</li>
+    <li><b>Price:</b> $@Model.Price</li>
+    <li><b>Publish date:</b> @Model.PublishDate.ToShortDateString()</li>
+    <li><b>Description:</b> @Model.Description</li>
+</ul>
+

@@ -1,0 +1,121 @@
+﻿@model BookWeb.ViewModels.BookViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Search for books</h2>
+
+@{
+    List<SelectListItem> categories = new List<SelectListItem>();
+
+    categories.Add(new SelectListItem
+    {
+        Text = "Author",
+        Value = "author"
+    });
+    categories.Add(new SelectListItem
+    {
+        Text = "Title",
+        Value = "title",
+        Selected = true
+    });
+    categories.Add(new SelectListItem
+    {
+        Text = "Genre",
+        Value = "genre"
+    });
+}
+
+@using (Html.BeginForm("Index", "Book"))
+{
+    <div class="form-group text-center">
+        <p>
+            @Html.TextBox("searchValue", null, new { @class = "form-control", @style = "margin: 0px auto; width: 600px;", @placeholder = "Search" })
+        </p>
+        <p>
+            @Html.DropDownList("searchType", categories, null, new { @class = "form-control", @style = "margin: 0px auto; width: 600px;" })
+        </p>
+        <button type="submit" class="btn btn-default">Search</button>
+        
+    </div>
+
+}
+
+
+@if (!Model.Books.Any())
+{
+    <div class="text-center">
+        <text> Sorry, there are no books. </text>
+    </div>
+}
+
+else
+{
+    <table class="table table-striped table-hover">
+
+        <thead>
+            <tr>
+                <th>@Html.ActionLink("New Book", "NewBook", "Book", null, new { @class = "btn btn-default btn-sm" })</th>
+                <th>@Html.ActionLink("Author", "Index", new { searchValue = Model.SearchValue, searchType = Model.SearchType, sortBy = ViewBag.AuthorSortParm })</th>
+                <th>@Html.ActionLink("Title", "Index", new { searchValue = Model.SearchValue, searchType = Model.SearchType, sortBy = ViewBag.TitleSortParm })</th>
+                <th>Genre</th>
+                <th>Price</th>
+                <th>Publish date</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var book in Model.Books)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink("Edit", "EditBook", "Book", new { id = book.ID }, null) |
+                        @Html.ActionLink("Detail", "Detail", "Book", new { id = book.ID }, null)
+                    </td>
+                    <td>@book.Author</td>
+                    <td>@book.Title</td>
+                    <td>@book.Genre</td>
+                    <td>$@book.Price</td>
+                    <td>@book.PublishDate.ToShortDateString()</td>
+                    <td>@book.Description</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination" style="text-align:center">
+            @if (Model.Pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink("Previous", "Index", "Book", new { page = (Model.Pager.CurrentPage - 1) }, null)
+                </li>
+            }
+
+            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", "Book", new { currentPage = page }, null)
+                </li>
+            }
+            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink("Next", "Index", "Book", new { currentPage = Model.Pager.CurrentPage + 1 }, null)
+                </li>
+                <li>
+                    @Html.ActionLink("Last", "Index", "Book", new { currentPage = Model.Pager.TotalPages }, null)
+                </li>
+            }
+        </ul>
+
+
+    }
+}
+
+
